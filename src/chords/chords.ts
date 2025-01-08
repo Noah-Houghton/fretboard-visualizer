@@ -1,6 +1,6 @@
 import { Position } from '../fretboard/Fretboard';
 
-export function parseChord(chord: string): {
+export function parseChord(chord: string, includeOpen=false): {
   positions: Position[];
   mutedStrings: number[];
 } {
@@ -8,7 +8,7 @@ export function parseChord(chord: string): {
   const mutedStrings = [] as number[];
   const splitter = chord.indexOf('-') > -1 ? '-' : '';
   chord.split(splitter).reverse().forEach((fret, string) => {
-    if (fret === '0') {
+    if (fret === '0' && !includeOpen) {
       return;
     }
     if (fret === 'x') {

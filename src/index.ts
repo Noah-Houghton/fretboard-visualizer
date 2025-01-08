@@ -7,6 +7,10 @@ export {
 } from './tetrachords/tetrachords';
 
 export {
+  parseChord,
+} from './chords/chords'
+
+export {
   disableStrings,
   disableDots,
   sliceBox

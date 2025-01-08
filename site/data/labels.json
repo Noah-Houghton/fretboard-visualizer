@@ -10,7 +10,12 @@
       "pentatonic": "Pentatonic system",
       "caged": "CAGED System",
       "tnps": "Three Notes per String",
+      "chord": "Chord Tones",
       "boxes": "Connected Boxes"
+    },
+    "overlays": {
+      "title": "Overlays",
+      "chordsHeader": "Chords over Scale"
     },
     "modes": {
       "title": "Examples / Modes"

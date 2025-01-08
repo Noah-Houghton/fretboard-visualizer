@@ -17,6 +17,7 @@ const examples = [
   'tetrachords',
   'events',
   'highlight',
+  'overlays',
 ];
 
 const labels = require('./site/data/labels.json');

@@ -64,7 +64,7 @@
         "node-sass-json-importer": "^4.3.0",
         "nyc": "^15.1.0",
         "prismjs": "^1.20.0",
-        "rollup": "^2.15.0",
+        "rollup": "^2.79.2",
         "rollup-plugin-typescript2": "^0.29.0",
         "sass": "^1.29.0",
         "sass-loader": "^8.0.2",
@@ -74,7 +74,7 @@
         "typescript": "^3.9.5",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.11.0"
+        "webpack-dev-server": "^3.11.3"
     },
     "dependencies": {
         "@tonaljs/interval": "^4.5.1",

@@ -5,7 +5,8 @@ import { Position } from '../../fretboard/Fretboard';
 export enum Systems {
     pentatonic = 'pentatonic',
     CAGED = 'CAGED',
-    TNPS = 'TNPS'
+    TNPS = 'TNPS',
+    chord = 'chord',
 }
 
 type ScaleDefinition = {
@@ -18,12 +19,30 @@ type GetBoxParams = {
     root: string;
     box: number|string;
     mode?: number|string;
-    system: Systems;
+    system: string;
+}
+
+type GetBoxInSystemParams = {
+    root: string;
+    box: number|string;
+    modeNumber?: number|string;
+    system: string;
 }
 
 const DEFAULT_MODE = 0;
 const DEFAULT_PENTATONIC_MODE = 5;
 const CAGED_ORDER = 'GEDCA';
+const CHORD_ORDER = ["Fifth", "Seventh", "Root", "Third"]
+
+const knownSystems: Record<string, Function> = {} // populate this using registerSystem
+
+export function registerSystem (key: string, getBoxInSystem: (args: GetBoxInSystemParams) => ScaleDefinition|null): void {
+    if (key in knownSystems) {
+        throw new Error(`Attempt to overwrite existing system ${key}`)
+    }
+    knownSystems[key] = getBoxInSystem
+}
+
 
 const CAGEDDefinition: ScaleDefinition[] = [
     {
@@ -175,6 +194,57 @@ const TNPSDefinition: ScaleDefinition[] = [
     }
 ];
 
+const ChordDefinition: ScaleDefinition[] = [
+    {
+        box: [
+            '-5----',
+            '-2-34-',
+            '6-71--',
+            '34-5--',
+            '71-2--',
+            '-5-6--',
+        ],
+        baseChroma: getChroma('A#'),
+        baseOctave: 2
+    },
+    {
+        box: [
+            '--6-7-',
+            '--34-5',
+            '-71-2-',
+            '--5-6-',
+            '--2-34',
+            '----71'
+        ],
+        baseChroma: getChroma('A'),
+        baseOctave: 3
+    },
+    {
+        box: [
+            '--71--',
+            '---5-6',
+            '--2-34',
+            '--6-71',
+            '--34-5',
+            '---1-2'
+        ],
+        baseChroma: getChroma('G'),
+        baseOctave: 4
+    },
+    {
+        box: [
+            '--2-3-',
+            '--6-71',
+            '-34-5-',
+            '-71-2-',
+            '--5-6-',
+            '----34'
+        ],
+        baseChroma: getChroma('E'),
+        baseOctave: 4
+    },
+];
+
 export function getModeFromScaleType(type: string): number {
     const { modeNum } = getMode(type.replace('pentatonic', '').trim());
     return modeNum;
@@ -222,7 +292,6 @@ export function getBox({
     system,
     box
 }: GetBoxParams): Position[] {
-    let foundBox;
     let modeNumber = system === Systems.pentatonic
         ? DEFAULT_PENTATONIC_MODE
         : DEFAULT_MODE;        
@@ -233,30 +302,30 @@ export function getBox({
         modeNumber = mode;
     }
 
-    switch (system) {
-        case Systems.pentatonic:
-            foundBox = CAGEDDefinition[getPentatonicBoxIndex(+box, modeNumber)];
-            break;
-        case Systems.CAGED:
-            foundBox = CAGEDDefinition[CAGED_ORDER.indexOf(`${box}`)];
-            break;
-        case Systems.TNPS:
-            foundBox = TNPSDefinition[+box - 1];
-            break;
+    const getBoxInSystem = knownSystems[system]
+    if (!getBoxInSystem) {
+        throw new Error(`System ${system} not found`);
     }
+    const foundBox: ScaleDefinition|null = getBoxInSystem({root, modeNumber, system, box});
     
     if (!foundBox) {
-        throw new Error(`Cannot find box ${box} in the ${Systems[system]} scale system`);
+        throw new Error(`Cannot find box ${box} in the ${system} scale system`);
     }
 
     const { baseChroma, box: boxDefinition } = foundBox;
-    
+
     return getBoxPositions({
         root,
         modeOffset: getModeOffset(modeNumber),
         baseChroma,
         box: system === Systems.pentatonic
-            ? boxDefinition.slice().map(x => x.replace('4', '-').replace('7', '-'))
+            ? boxDefinition.slice().map((x: string) => x.replace('4', '-').replace('7', '-'))
             : boxDefinition
     });    
 }
+
+// register default systems
+registerSystem(Systems.pentatonic, ({box, modeNumber}: GetBoxInSystemParams) => CAGEDDefinition[getPentatonicBoxIndex(+box, modeNumber as number)])
+registerSystem(Systems.CAGED, ({box}: GetBoxInSystemParams) => CAGEDDefinition[CAGED_ORDER.indexOf(`${box}`)])
+registerSystem(Systems.TNPS, ({box}: GetBoxInSystemParams) => TNPSDefinition[+box - 1])
+registerSystem(Systems.chord, ({box}: GetBoxInSystemParams) => ChordDefinition[CHORD_ORDER.indexOf(`${box}`)])

@@ -45,3 +45,7 @@ docs
 
 # Coverage
 .nyc_output
+
+# IDEs
+.idea/
+.vscode/

@@ -2,6 +2,15 @@
 
 ![Fretboard.js - Fretboard diagram generator][icon]
 
+
+# Source Repo
+
+This repository was forked from the excellent [Fretboard.js](https://github.com/moonwave99/fretboard.js) library.
+This fork aims to improve the library in the following ways:
+
+1. Make Systems easier to customize
+2. Introduce a concept of "overlays" to help improve visualization skills
+
 [Fretboard.js][homepage] is:
 
 - a guitar/bass fretboard SVG visualisation;
