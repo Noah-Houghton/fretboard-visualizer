@@ -47,6 +47,7 @@ export type Position = {
   interval?: string;
   degree?: number;
   chroma?: number;
+  overlayGroup?: string;
 } & Record<string, string | number | boolean | Array<string | number>>;
 
 type MouseEventNames = keyof Pick<
@@ -257,7 +258,8 @@ export class Fretboard {
   private system: FretboardSystem;
   private dots: Position[] = [];
   private overlayDots: Position[] = [];
-  private postRender: Function|null = null;
+  private overlayRenderers: Record<string, Function> = {};
+  private postRender: Function = (): null => null;
   constructor(options = {}) {
     this.options = Object.assign({}, defaultOptions, options);
     validateOptions(this.options);
@@ -348,7 +350,6 @@ export class Fretboard {
       .attr('class', 'dots')
       .attr('font-family', font);
 
-    const overlayDotGroup = wrapper.append('g').attr('class', 'overlay-dots').attr('font-family', font)
 
     const dotsNodes = dotGroup.selectAll('g')
       .data(dots)
@@ -374,44 +375,68 @@ export class Fretboard {
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('font-size', dotTextSize)
+      .style('pointer-events', 'none')
       .text(dotText);
 
-    const overlayDotsNodes = overlayDotGroup.selectAll('g')
-        .data(overlayDots)
-        .enter()
-        .filter(({ fret }) => fret >= 0)
-        .append('g')
-        .attr('class', dot => ['dot', dotClasses(dot, 'overlay')].join(' '))
-        .attr('opacity', ({ disabled }) => disabled ? disabledOpacity : 1);
+    const overlayDotsByGroup: Record<string, Array<Position>> = {}
+    for (const dot of overlayDots) {
+      if (!overlayDotsByGroup[dot.overlayGroup]) {
+        overlayDotsByGroup[dot.overlayGroup] = []
+      }
+      overlayDotsByGroup[dot.overlayGroup].push(dot)
+    }
+    const overlaySVGGroups = []
+    for (const group of Object.keys(overlayDotsByGroup)) {
+      const overlayDotGroup = wrapper.append('g').attr('class', 'overlay-dots').attr('font-family', font).attr('data-group', group)
+      overlaySVGGroups.push(overlayDotGroup)
+      const renderer = this.overlayRenderers[group]
+      const dots = overlayDotsByGroup[group]
+      if (renderer) {
+        renderer(overlayDotGroup, dots, {primaryDotsNodes: dotsNodes, context: this})
+      } else {
+        const overlayDotsNodes = overlayDotGroup.selectAll('g')
+            .data(overlayDots)
+            .enter()
+            .filter(({ fret }) => fret >= 0)
+            .append('g')
+            .attr('class', dot => ['dot', dotClasses(dot, 'overlay')].join(' '))
+            .attr('opacity', ({ disabled }) => disabled ? disabledOpacity : 1);
 
-    const rectSize = dotSize * .75
-    overlayDotsNodes.append('rect')
-        .attr('class', 'overlay-dot-circle')
-        .attr('x', ({ string, fret }) => `${positions[string - 1][fret - dotOffset].x}%`)
-        .attr('y', ({ string, fret }) => positions[string - 1][fret - dotOffset].y)
-        .attr('transform-origin', 'center')
-        .style('transform-box', 'fill-box')
-        .attr('transform', `translate(-${rectSize / 2} -${rectSize / 2}) rotate(-45)`)
-        .attr('width', rectSize)
-        .attr('height', rectSize)
-        .attr('stroke', dotStrokeColor)
-        .attr('stroke-width', dotStrokeWidth)
-        .attr('fill', overlayDotFill);
+        const rectSize = dotSize * .75
+        overlayDotsNodes.append('rect')
+            .attr('class', 'overlay-dot-circle')
+            .attr('x', ({ string, fret }) => `${positions[string - 1][fret - dotOffset].x}%`)
+            .attr('y', ({ string, fret }) => positions[string - 1][fret - dotOffset].y)
+            .attr('transform-origin', 'center')
+            .style('transform-box', 'fill-box')
+            .attr('transform', `translate(-${rectSize / 2} -${rectSize / 2}) rotate(-45)`)
+            .attr('width', rectSize)
+            .attr('height', rectSize)
+            .attr('stroke', dotStrokeColor)
+            .attr('stroke-width', dotStrokeWidth)
+            .attr('fill', overlayDotFill);
 
-    overlayDotsNodes.append('text')
-        .attr('class', 'overlay-dot-text')
-        .attr('x', ({ string, fret }) => `${positions[string - 1][fret - dotOffset].x}%`)
-        .attr('y', ({ string, fret }) => positions[string - 1][fret - dotOffset].y)
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'central')
-        .attr('font-size', dotTextSize)
-        .text(overlayDotText);
+        overlayDotsNodes.append('text')
+            .attr('class', 'overlay-dot-text')
+            .attr('x', ({ string, fret }) => `${positions[string - 1][fret - dotOffset].x}%`)
+            .attr('y', ({ string, fret }) => positions[string - 1][fret - dotOffset].y)
+            .attr('text-anchor', 'middle')
+            .attr('dominant-baseline', 'central')
+            .attr('font-size', dotTextSize)
+            .style('pointer-events', 'none')
+            .text(overlayDotText);
+      }
+    }
 
     // provides hooks so that users can directly interact with the underlying d3 logic
     // to implement reactive behavior
-    this.postRender(this.svg, dotsNodes, overlayDotsNodes)
+    this.postRender(this.svg, dotsNodes, overlaySVGGroups)
 
     return this;
+  }
+
+  setOverlayRenderer(key: string, renderer: Function): void {
+    this.overlayRenderers[key] = renderer;
   }
 
   setDots(dots: Position[]): Fretboard {
@@ -453,7 +478,7 @@ export class Fretboard {
       // if the dot matches one in dots, replace it
       for (const sourceDot of dots) {
         if (sourceDot.fret === dot.fret && sourceDot.string === dot.string) {
-          matchingDots.push(dot)
+          matchingDots.push({...dot, ...sourceDot})
         }
       }
     }
