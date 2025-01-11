@@ -9,7 +9,12 @@
     <%= htmlWebpackPlugin
             .tags
             .headTags
-            .filter((tag) => tag.attributes.href.startsWith('index'))
+            .filter((tag) => tag.attributes.href?.startsWith('index'))
+            .join('')
+    %>
+    <%= htmlWebpackPlugin
+            .tags.headTags
+            .filter((tag) => tag.attributes.src?.startsWith('index'))
             .join('')
     %>
 </head>

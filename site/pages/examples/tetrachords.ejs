@@ -7,10 +7,15 @@
 	  content="width=device-width, initial-scale=1">
 	<title><%= htmlWebpackPlugin.options.title %></title>
 	<%= htmlWebpackPlugin
-		.tags
-		.headTags
-		.filter((tag) => tag.attributes.href.startsWith('index'))
-		.join('')
+			.tags
+			.headTags
+			.filter((tag) => tag.attributes.href?.startsWith('index'))
+			.join('')
+	%>
+	<%= htmlWebpackPlugin
+			.tags.headTags
+			.filter((tag) => tag.attributes.src?.startsWith('index'))
+			.join('')
 	%>
 </head>
 

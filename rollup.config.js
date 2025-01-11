@@ -6,7 +6,7 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      name: 'fretboard',
+      name: 'fretboard-visualizer',
       file: pkg.browser,
       format: 'umd',
       sourcemap: true,

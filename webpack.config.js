@@ -26,7 +26,7 @@ const snippetsFile = fs.readFileSync('./site/data/snippets.md', 'utf8');
 const docs = documentation.reduce(
   (memo, key) => ({
     ...memo,
-    [key]: marked(
+    [key]: marked.parse(
       fs.readFileSync(`./site/data/documentation/${key}.md`, 'utf8')
     ),
   }),
@@ -37,7 +37,7 @@ const getTexts = (file) => {
   const tokens = file.split(/<!--([\s\S]*?)-->/g);
   tokens.shift();
   return chunk(tokens, 2).reduce(
-    (memo, [key, value]) => ({ ...memo, [key]: marked(value) }),
+    (memo, [key, value]) => ({ ...memo, [key]: marked.parse(value)}),
     {}
   );
 };
@@ -220,7 +220,7 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: targetPath,
+    static: targetPath,
     compress: true,
     port: 9000,
   },

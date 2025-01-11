@@ -1,5 +1,6 @@
-import { colors } from '../config.json';
-export { colors } from '../config.json';
+import config from '../config.json';
+
+export const colors = config.colors
 
 export const fretboardConfiguration = {
   height: 200,
