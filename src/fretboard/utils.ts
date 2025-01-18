@@ -159,35 +159,59 @@ type GetPositionParams = {
 }
 
 export const getPositionFromMouseCoords = ({
-  event,
-  stringsGroup,
-  leftPadding,
-  nutWidth,
-  strings,
-  frets,
-  dots
-}: GetPositionParams): Position => {
-  const {
-    width: stringsGroupWidth,
-    height: stringsGroupHeight
-  } = (stringsGroup.node() as HTMLElement).getBoundingClientRect();
-  const bounds = (event.target as HTMLElement).getBoundingClientRect();
-  const x = event.clientX - bounds.left;
-  const y = event.clientY - bounds.top;
+                                             event,
+                                             stringsGroup,
+                                             nutWidth,
+                                             strings,
+                                             frets,
+                                             dots
+                                           }: GetPositionParams): Position | undefined => {
 
-  let foundString = 0;
+  // Determine the event type at runtime and extract coordinates
+  let clientX: number ;
+  let clientY: number ;
 
-  const stringDistance = stringsGroupHeight / (strings.length - 1);
-
-  for (let i = 0; i < strings.length; i++) {
-    if (y < stringDistance * (i + 1)) {
-      foundString = i;
-      break;
+  if ( event instanceof TouchEvent)
+  {
+    if ( event.touches.length > 0 )
+    {
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    }
+    else
+    {
+      // This is a realistic case for the touch end event
+      return undefined ;
     }
   }
+  else if ( event instanceof MouseEvent )
+  {
+    clientX = event.clientX;
+    clientY = event.clientY;
+  }
+  else
+  {
+    return undefined ;
+  }
+
+  const bounds = (stringsGroup.node() as HTMLElement).getBoundingClientRect();
+  const x = clientX - bounds.left;
+  const y = clientY - bounds.top;
+
+  // Get the separation of the strings
+  const stringDistance = bounds.height / (strings.length - 1) ;
+
+  // Divide Y by the separation and round to the nearest integer.
+  const foundString = Math.round ( y / stringDistance ) ;
+
+  // Check for invalid string numbers after rounding
+  if ( foundString < 0 )
+    return undefined ;
+  else if ( foundString >= strings.length )
+    return undefined ;
 
   let foundFret = -1;
-  const percentX = (Math.max(0, x - leftPadding) / stringsGroupWidth) * 100;
+  const percentX = (Math.max(0, x) / bounds.width) * 100;
 
   for (let i = 0; i < frets.length; i++) {
     if (percentX < frets[i]) {
@@ -197,9 +221,10 @@ export const getPositionFromMouseCoords = ({
     foundFret = i;
   }
 
-  if (x < leftPadding + nutWidth) {
+  if (x < nutWidth) {
     foundFret = 0;
   }
+
 
   const foundDot = dots.find(({ fret, string }) => fret === foundFret && string === foundString + 1);
   return foundDot || {
@@ -209,18 +234,19 @@ export const getPositionFromMouseCoords = ({
 }
 
 export function createHoverDiv({
-  bottomPadding,
+    topPadding,
+    leftPadding,
+    rightPadding,
   showFretNumbers,
   fretNumbersHeight
 }: Options): HTMLDivElement {
   const hoverDiv = document.createElement('div');
-  const bottom = bottomPadding
-    + (showFretNumbers ? fretNumbersHeight : 0);
+  const bottom = (showFretNumbers ? fretNumbersHeight : 0);
   hoverDiv.className = 'hoverDiv';
   hoverDiv.style.position = 'absolute';
-  hoverDiv.style.top = '0';
+  hoverDiv.style.top = `${topPadding/2}px`;
   hoverDiv.style.bottom = `${bottom}px`;
-  hoverDiv.style.left = '0';
-  hoverDiv.style.right = '0';
+  hoverDiv.style.left = `${leftPadding/2}px`;
+  hoverDiv.style.right = `${rightPadding/2}px`;
   return hoverDiv;
 }
