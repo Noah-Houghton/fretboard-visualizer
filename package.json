@@ -1,5 +1,5 @@
 {
-    "name": "@Noah-Houghton/fretboard-visualizer",
+    "name": "fretboard-visualizer",
     "version": "0.1.0",
     "description": "Fretboard visualizer",
     "homepage": "https://noah-houghton.github.io/fretboard-visualizer/",
@@ -13,9 +13,9 @@
         "dist/**/*.d.ts"
     ],
     "scripts": {
-        "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' npx ava",
+        "test": "npx ava",
         "coverage": "nyc npm run test",
-        "lint": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
+        "lint": "npx eslint",
         "start:dev": "rollup -c -w",
         "build:prod": "rollup -c",
         "site:dev": "webpack-dev-server --mode=development",
@@ -32,21 +32,21 @@
         "type": "git",
         "url": "https://github.com/Noah-Houghton/fretboard-visualizer"
     },
-    "author": "Noah Houghton <hello@noahhoughton.com>",
+    "author": "Noah Houghton <contact@noahhoughton.com>",
     "license": "ISC",
     "ava": {
         "require": [
-            "esm"
+          "ts-node/register"
         ],
-        "files": [
-            "src/**/*.test.ts"
-        ],
-        "extensions": {
-            "ts": "module"
-        },
         "nodeArguments": [
-            "--import=tsimp"
-        ]
+          "--loader=ts-node/esm"
+        ],
+        "typescript": {
+          "rewritePaths": {
+            "src/": "dist/"
+          },
+          "compile": false
+        }
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^16.0.0",
@@ -55,7 +55,7 @@
         "@types/throttle-debounce": "^2.1.0",
         "@typescript-eslint/eslint-plugin": "^8.19.1",
         "@typescript-eslint/parser": "^8.19.1",
-        "abcjs": "^6.0.0-beta.24",
+        "abcjs": "^6.4.4",
         "ava": "^6.2.0",
         "browser-env": "^2.0.31",
         "bulma": "^0.8.2",
@@ -66,19 +66,18 @@
         "fs-extra": "^9.0.1",
         "gh-pages": "^6.3.0",
         "html-webpack-plugin": "^5.6.3",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.21",
         "marked": "^15.0.6",
-        "mini-css-extract-plugin": "^0.9.0",
-        "node-sass-json-importer": "^4.3.0",
-        "nyc": "^15.1.0",
-        "prismjs": "^1.20.0",
+        "mini-css-extract-plugin": "^2.9.2",
+        "node-sass-json-functions": "^4.1.0",
+        "nyc": "^17.1.0",
+        "prismjs": "^1.29.0",
         "rollup": "^4.30.1",
         "rollup-plugin-typescript2": "^0.36.0",
         "sass": "^1.29.0",
         "sass-loader": "^8.0.2",
         "style-loader": "^1.2.1",
         "ts-node": "^10.9.2",
-        "tsimp": "^2.0.12",
         "tslib": "^2.8.1",
         "typescript": "^5.7.3",
         "webpack": "^5.97.1",
@@ -87,6 +86,7 @@
     },
     "dependencies": {
         "@ava/typescript": "^5.0.0",
+        "@blakedarlin/sass-json-importer": "^1.1.0",
         "@tonaljs/interval": "^4.5.1",
         "@tonaljs/mode": "^4.5.1",
         "@tonaljs/note": "^4.6.0",

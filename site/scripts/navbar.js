@@ -1,4 +1,4 @@
-import { Fretboard } from '../../dist/fretboard.esm.js';
+import { Fretboard } from '../../dist/fretboard-visualizer.esm.js';
 import { colors } from "./config.js";
 
 const NAVBAR_CHORD = '076780';

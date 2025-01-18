@@ -1,4 +1,4 @@
-import { Fretboard } from '../../../dist/fretboard.esm.js';
+import { Fretboard } from '../../../dist/fretboard-visualizer.esm.js';
 import { get as getScale } from '@tonaljs/scale';
 
 import { fretboardConfiguration, colors } from '../config.js';

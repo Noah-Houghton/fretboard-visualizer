@@ -3,11 +3,10 @@ const fs = require('fs-extra');
 const { chunk } = require('lodash');
 const marked = require('marked');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const jsonImporter = require('node-sass-json-importer');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 const targetPath = path.resolve(__dirname, '_site');
+const jsonFns = require('node-sass-json-functions');
 
 const documentation = ['fretboard', 'musicTools'];
 const examples = [
@@ -164,9 +163,11 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
-              sassOptions: {
-                importer: jsonImporter(),
-              },
+              sassOptions: (loaderContext) => {
+                return {
+                  functions: {...jsonFns},
+                }
+              }
             },
           },
         ],
