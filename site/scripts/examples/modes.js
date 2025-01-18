@@ -1,5 +1,5 @@
 import { get as getScale } from '@tonaljs/scale';
-import { Fretboard, Systems } from '../../../dist/fretboard.esm.js';
+import { Fretboard, Systems } from '../../../dist/fretboard-visualizer.esm.js';
 import { fretboardConfiguration, colors, modeMap } from '../config.js';
 
 const EMajorScale = getScale('E2 ionian').notes;

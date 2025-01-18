@@ -1,5 +1,5 @@
 import {colors, fretboardConfiguration} from "../config";
-import { Fretboard, Systems, parseChord, dotClasses } from '../../../dist/fretboard.esm.js';
+import { Fretboard, Systems, parseChord, dotClasses } from '../../../dist/fretboard-visualizer.esm.js';
 
 
 function overlaysChordDemo() {

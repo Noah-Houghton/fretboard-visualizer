@@ -4,7 +4,7 @@ import {
   Systems,
   disableDots,
   FretboardSystem
-} from '../../../dist/fretboard.esm.js';
+} from '../../../dist/fretboard-visualizer.esm.js';
 import { fretboardConfiguration, colors } from "../config.js";
 import SystemForm from "../forms/systems.js";
 

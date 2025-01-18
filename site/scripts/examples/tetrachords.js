@@ -3,7 +3,7 @@ import {
   tetrachord,
   TetrachordTypes,
   TetrachordLayouts
-} from '../../../dist/fretboard.esm.js';
+} from '../../../dist/fretboard-visualizer.esm.js';
 
 import { fretboardConfiguration, colors } from '../config.js';
 
