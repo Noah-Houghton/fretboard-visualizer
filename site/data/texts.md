@@ -88,6 +88,10 @@ Here the same **C major** scale is played in different positions.
 The three notes per string system is organised in seven boxes, each starting from corresponding scale degree.  
 _Et les modes son fait!_
 
+<!--examples.systems.chord-->
+
+The Chord system is organized in four boxes, each starting from a different chord tone of the IM7.
+
 <!--examples.systems.boxes.1-->
 
 This example shows two adjacent **E minor pentatonic** boxes.
@@ -95,3 +99,12 @@ This example shows two adjacent **E minor pentatonic** boxes.
 <!--examples.systems.boxes.2-->
 
 This example shows the connection between the **C-shaped box** and the **A-shaped box** of the D major scale.
+
+
+<!--examples.overlays.description-->
+
+This example shows how you can render chord patterns over a scale pattern.
+
+<!--examples.overlays.chords-->
+
+This example shows how you can render chord patterns over a scale pattern.

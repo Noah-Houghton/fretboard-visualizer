@@ -4,7 +4,7 @@ import {
   Systems,
   disableDots,
   FretboardSystem
-} from '../../../dist/fretboard.esm.js';
+} from '../../../dist/fretboard-visualizer.esm.js';
 import { fretboardConfiguration, colors } from "../config.js";
 import SystemForm from "../forms/systems.js";
 
@@ -137,6 +137,46 @@ function TNPSSystemExample() {
   });
 }
 
+function ChordSystemExample() {
+  const $wrapper = document.querySelector('.fretboard-systems-chord');
+  const fretboard = new Fretboard({
+    ...fretboardConfiguration,
+    el: $wrapper.querySelector('figure'),
+    dotText: ({ note, octave, interval }) => note,
+    dotFill: ({ interval, inBox }) =>
+        !inBox
+            ? colors.disabled
+            : interval === "1P"
+                ? colors.defaultActiveFill
+                : colors.defaultFill,
+  });
+
+  fretboard.renderScale({
+    type: 'major',
+    root: 'C',
+    box: {
+      box: "Fifth",
+      system: Systems.chord
+    },
+  });
+
+  SystemForm({
+    prefix: 'chord',
+    el: $wrapper.querySelector('.form-wrapper'),
+    boxes: ["Fifth", "Seventh", "Root", "Third"],
+    onChange: ({ mode, box, root }) => {
+      fretboard.renderScale({
+        type: mode,
+        root,
+        box: {
+          box,
+          system: Systems.chord,
+        },
+      });
+    },
+  });
+}
+
 function connectedCagedExample({ box1, box2 } = {}) {
   function enableCommonDots({ string, fret, ...dot }) {
     const isInBox1 =
@@ -257,4 +297,5 @@ export default function systems() {
     CAGEDSystemExample();
     TNPSSystemExample();
     connectedBoxesExample();
+    ChordSystemExample();
 }

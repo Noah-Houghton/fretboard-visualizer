@@ -7,16 +7,16 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"noImplicitAny": true,
+		"noImplicitAny": false,
 		"noImplicitThis": true,
 		"sourceMap": true,
 		"esModuleInterop": true,
-		"target": "es2017",
-		"types": ["node"]
+		"target": "es6",
+		"types": ["node"],
 	},
 	"include": [
 		"typings.d.ts",
 		"src/**/*.ts"
 	],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules"],
 }

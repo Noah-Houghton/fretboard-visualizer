@@ -7,6 +7,14 @@ export {
 } from './tetrachords/tetrachords';
 
 export {
+  parseChord,
+} from './chords/chords'
+
+export {
+  dotClasses,
+} from './fretboard/utils'
+
+export {
   disableStrings,
   disableDots,
   sliceBox

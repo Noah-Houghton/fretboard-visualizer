@@ -1,12 +1,23 @@
-# Fretboard.js
+# Fretboard Visualizer
 
-![Fretboard.js - Fretboard diagram generator][icon]
+![Fretboard Visualizer - Fretboard diagram generator][icon]
 
-[Fretboard.js][homepage] is:
+
+# Source Repo
+
+This repository was forked from the excellent [Fretboard.js](https://github.com/moonwave99/fretboard.js) library.
+This fork aims to improve the library in the following ways:
+
+1. Make Systems more flexible, allowing the addition of custom systems without needing to fork the library
+2. Introduce a concept of "overlays" to help improve visualization skills
+3. Make display logic more customizable by providing access to the underlying D3 functionality
+
+[Fretboard Visualizer][homepage] is:
 
 - a guitar/bass fretboard SVG visualisation;
 - a set of music oriented tools - as scale boxes, arpeggios and chord shapes;
 - an API for user interaction.
+
 
 ## Usage and installation
 
@@ -14,7 +25,7 @@
 
 ---
 
-## [ISC License](https://spdx.org/licenses/ISC)
+## Fretboard.js [ISC License](https://spdx.org/licenses/ISC)
 
 Copyright (c) 2020, Diego Caponera <hello@diegocaponera.com>
 

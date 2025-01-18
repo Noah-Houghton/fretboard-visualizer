@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" class="has-navbar-fixed-top" data-section="overlays">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <%= htmlWebpackPlugin
+            .tags
+            .headTags
+            .filter((tag) => tag.attributes.href?.startsWith('index'))
+            .join('')
+    %>
+    <%= htmlWebpackPlugin
+            .tags.headTags
+            .filter((tag) => tag.attributes.src?.startsWith('index'))
+            .join('')
+    %>
+</head>
+
+<body>
+<%= partials.nav('overlays') %>
+<main>
+    <section class="container">
+        <header>
+            <h1><%= examples.overlays.title %></h1>
+            <p>
+                <a href="<%= getExampleLink('overlays') %>">See example source</a>
+            </p>
+            <%= texts['examples.overlays.description'] %>
+        </header>
+        <section class="fretboard-overlays-chords">
+            <header>
+                <h2><%= examples.overlays.chordsHeader %></h2>
+                <%= texts['examples.overlays.chords'] %>
+            </header>
+            <div class="columns">
+                <figure class="column"></figure>
+            </div>
+        </section>
+    </section>
+</main>
+<%= partials.footer() %>
+<%= htmlWebpackPlugin
+        .tags
+        .bodyTags
+        .filter((tag) => tag.attributes.src.startsWith('index'))
+        .join('')
+%>
+</body>
+</html>

@@ -1,14 +1,12 @@
-import 'abcjs/abcjs-midi.css';
-import ABCJS from 'abcjs/midi';
+import 'abcjs/abcjs-audio.css';
+import ABCJS from 'abcjs';
 import { getChord } from '@tonaljs/chord';
 
-import { Fretboard, Systems } from '../../../dist/fretboard.esm.js';
+import { Fretboard, Systems } from '../../../dist/fretboard-visualizer.esm.js';
 
 import { fretboardConfiguration, abcjsConfig, colors } from '../config.js';
 import { diatonicArpeggios } from '../music.js';
 import '../navbar.js';
-import '../../styles/style.scss';
-import '../../styles/playback.scss';
 
 document.addEventListener('DOMContentLoaded', () => {
   const fretboard = new Fretboard({

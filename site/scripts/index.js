@@ -10,6 +10,7 @@ import events from './examples/events.js';
 import tetrachords from './examples/tetrachords.js';
 import highlight from './examples/highlight.js';
 import systems from './examples/systems.js';
+import overlays from './examples/overlays.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   ({
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tetrachords,
     highlight,
     systems,
+    overlays,
     documentation: () => {},
   }[document.documentElement.dataset.section]());
 });

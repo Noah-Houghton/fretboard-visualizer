@@ -3,11 +3,10 @@ const fs = require('fs-extra');
 const { chunk } = require('lodash');
 const marked = require('marked');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const jsonImporter = require('node-sass-json-importer');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 const targetPath = path.resolve(__dirname, '_site');
+const jsonFns = require('node-sass-json-functions');
 
 const documentation = ['fretboard', 'musicTools'];
 const examples = [
@@ -17,6 +16,7 @@ const examples = [
   'tetrachords',
   'events',
   'highlight',
+  'overlays',
 ];
 
 const labels = require('./site/data/labels.json');
@@ -25,7 +25,7 @@ const snippetsFile = fs.readFileSync('./site/data/snippets.md', 'utf8');
 const docs = documentation.reduce(
   (memo, key) => ({
     ...memo,
-    [key]: marked(
+    [key]: marked.parse(
       fs.readFileSync(`./site/data/documentation/${key}.md`, 'utf8')
     ),
   }),
@@ -36,7 +36,7 @@ const getTexts = (file) => {
   const tokens = file.split(/<!--([\s\S]*?)-->/g);
   tokens.shift();
   return chunk(tokens, 2).reduce(
-    (memo, [key, value]) => ({ ...memo, [key]: marked(value) }),
+    (memo, [key, value]) => ({ ...memo, [key]: marked.parse(value)}),
     {}
   );
 };
@@ -163,9 +163,11 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
-              sassOptions: {
-                importer: jsonImporter(),
-              },
+              sassOptions: (loaderContext) => {
+                return {
+                  functions: {...jsonFns},
+                }
+              }
             },
           },
         ],
@@ -219,7 +221,7 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: targetPath,
+    static: targetPath,
     compress: true,
     port: 9000,
   },
