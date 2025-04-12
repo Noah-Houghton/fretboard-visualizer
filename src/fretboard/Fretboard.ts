@@ -298,7 +298,7 @@ export class Fretboard {
     )
       .append('div')
       .attr('class', 'fretboard-html-wrapper')
-      .attr('style', 'position: relative')
+      .attr('style', 'position: relative;')
       .append('svg')
       .attr('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
 
@@ -697,9 +697,12 @@ export class Fretboard {
           dots: [...dots, ...overlayDots],
           ...options
         });
-        if (!position) return
-        const {chroma, note} = system.getNoteAtPosition(position);
-        handler({ ...position, note, chroma }, event);
+        if (position) {
+          const {chroma, note} = system.getNoteAtPosition(position);
+          handler({ ...position, note, chroma }, event);
+        } else {
+          handler({string: null, fret: null, note: null, chroma: null}, event)
+        }
       });
 
     this.hoverDiv.addEventListener(eventName, this.handlers[eventName]);
