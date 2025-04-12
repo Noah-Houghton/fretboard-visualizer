@@ -697,6 +697,7 @@ export class Fretboard {
           dots: [...dots, ...overlayDots],
           ...options
         });
+        if (!position) return
         const {chroma, note} = system.getNoteAtPosition(position);
         handler({ ...position, note, chroma }, event);
       });
